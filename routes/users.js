@@ -13,9 +13,9 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { name, about } = req.body;
+  const { name, about, avatar } = req.body;
 
-  User.create({ name, about })
+  User.create({ name, about, avatar })
     // вернём записанные в базу данные
     .then(user => res.send({ data: user }))
     // данные не записались, вернём ошибку
