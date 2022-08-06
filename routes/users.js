@@ -1,15 +1,16 @@
+const router = require('express').Router();
 const User = require('../models/user');
 
 router.get('/:userId', (req, res) => {
   User.findById(req.params.id)
-    .then(user => res.send({ data: user }))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 });
 
 router.get('/', (req, res) => {
   User.find({})
-    .then(user => res.send({ data: user }))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 });
 
 router.post('/', (req, res) => {
@@ -17,7 +18,9 @@ router.post('/', (req, res) => {
 
   User.create({ name, about, avatar })
     // вернём записанные в базу данные
-    .then(user => res.send({ data: user }))
+    .then((user) => res.send({ data: user }))
     // данные не записались, вернём ошибку
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 });
+
+module.exports = router; // экспортировали роутер
