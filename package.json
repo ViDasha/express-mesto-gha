@@ -141,6 +141,7 @@
     "micromatch": "^4.0.5",
     "minimatch": "^3.1.2",
     "minimist": "^1.2.6",
+    "mongoose": "^6.5.1",
     "ms": "^2.1.2",
     "natural-compare": "^1.4.0",
     "object-assign": "^4.1.1",
