@@ -50,7 +50,7 @@ module.exports.updateProfile = (req, res) => {
   User.findOneAndUpdate(
     req.user._id,
     { name, about },
-    { new: true },
+    { new: true, runValidators: true },
   )
     // eslint-disable-next-line consistent-return
     .then((user) => {
@@ -73,7 +73,7 @@ module.exports.updateAvatar = (req, res) => {
   User.findOneAndUpdate(
     req.user._id,
     { avatar },
-    { new: true },
+    { new: true, runValidators: true },
   )
     // eslint-disable-next-line consistent-return
     .then((user) => {
