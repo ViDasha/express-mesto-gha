@@ -4,13 +4,11 @@ module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     // eslint-disable-next-line consistent-return
     .then((user) => {
-      if (!req.params.userId) {
-        return res.status(400).send({ message: 'Получение пользователя с некорректным id' });
-      }
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      } else {
+        res.status(200).send(user);
       }
-      res.status(200).send(user);
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
@@ -32,11 +30,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     // вернём записанные в базу данные
-    .then((user) => res.send({
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-    }))
+    .then((user) => res.send(user))
     // данные не записались, вернём ошибку
     // eslint-disable-next-line consistent-return
     .catch((err) => {

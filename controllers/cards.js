@@ -29,12 +29,9 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findById(req.params.cardId) // удаление карточки по Id
+  Card.findByIdAndDelete(req.params.cardId) // удаление карточки по Id
     // eslint-disable-next-line consistent-return
     .then((card) => {
-      if (!req.params.cardId) {
-        return res.status(400).send({ message: 'Получение карточки с некорректным id' });
-      }
       if (!card) {
         return res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
