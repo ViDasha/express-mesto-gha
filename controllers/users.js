@@ -4,11 +4,11 @@ module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     // eslint-disable-next-line consistent-return
     .then((user) => {
+      if (!req.params.userId) {
+        return res.status(400).send({ message: 'Получение пользователя с некорректным id' });
+      }
       if (!user) {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
-      }
-      if (!user._id) {
-        return res.status(400).send({ message: 'Получение пользователя с некорректным id' });
       }
       res.status(200).send(user);
     })
