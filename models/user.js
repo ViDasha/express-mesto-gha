@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+}, {
+  versionKey: false, // You should be aware of the outcome after set to false
 });
 
 // создаём модель и экспортируем её
