@@ -38,7 +38,13 @@ module.exports.deleteCard = (req, res) => {
       Card.findByIdAndRemove(req.params.cardId)
         .then(() => res.status(200).send({ message: 'Карточка удалена' }));
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.likeCard = (req, res) => {
