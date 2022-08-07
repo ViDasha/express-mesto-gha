@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res) => {
       if (!card) {
         return res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
-      res.status(201).send(card);
+      res.status(200).send(card);
     })
     // eslint-disable-next-line consistent-return
     .catch((err) => {
@@ -74,7 +74,7 @@ module.exports.dislikeCard = (req, res) => {
       if (!card) {
         return res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
-      res.status(201).send(card);
+      res.status(200).send(card);
     })
     // eslint-disable-next-line consistent-return
     .catch((err) => {
