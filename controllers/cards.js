@@ -6,7 +6,7 @@ module.exports.getCards = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные пользователя' });
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
       }
       res.status(500).send({ message: 'Произошла ошибка' });
     });
@@ -22,7 +22,7 @@ module.exports.createCard = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные пользователя' });
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
       }
       res.status(500).send({ message: 'Произошла ошибка' });
     });
