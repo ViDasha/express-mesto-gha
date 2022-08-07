@@ -2,14 +2,26 @@ const User = require('../models/user');
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send(user))
+    // eslint-disable-next-line consistent-return
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      res.status(200).send(user);
+    })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -23,7 +35,13 @@ module.exports.createUser = (req, res) => {
       avatar: user.avatar,
     }))
     // данные не записались, вернём ошибку
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -34,8 +52,20 @@ module.exports.updateProfile = (req, res) => {
     { name, about },
     { new: true },
   )
-    .then((user) => res.status(200).send(user))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    // eslint-disable-next-line consistent-return
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      res.status(200).send(user);
+    })
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -45,6 +75,18 @@ module.exports.updateAvatar = (req, res) => {
     { avatar },
     { new: true },
   )
-    .then((user) => res.status(200).send(user))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    // eslint-disable-next-line consistent-return
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      res.status(200).send(user);
+    })
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
