@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const isEmail = require('validator/lib/isEmail');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -16,6 +17,21 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     required: true,
+  },
+  email: {
+    type: String,
+    require: true,
+    unique: true,
+    validate: [
+      isEmail,
+      {
+        message: 'Неверный формат E-mail',
+      },
+    ],
+  },
+  password: {
+    type: String,
+    require: true,
   },
 }, {
   versionKey: false, // You should be aware of the outcome after set to false
