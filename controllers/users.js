@@ -33,6 +33,25 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
+module.exports.getUser = (req, res) => {
+  User.findById(req.user._id)
+    // eslint-disable-next-line consistent-return
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      } else {
+        res.status(200).send(user);
+      }
+    })
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
+};
+
 module.exports.createUser = (req, res) => {
   const {
     name,
