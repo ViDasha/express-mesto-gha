@@ -71,11 +71,18 @@ module.exports.createUser = (req, res) => {
       password: hash,
     }))
     // вернём записанные в базу данные
-    .then((user) => res.send(user))
+    .then((user) => res.status(201).send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
     // данные не записались, вернём ошибку
     // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.code === 11000) {
+        next(err);
+      } else if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Переданы некорректные данные' });
       }
       res.status(500).send({ message: 'Произошла ошибка' });
