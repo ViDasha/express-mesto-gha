@@ -108,6 +108,7 @@
     "has-property-descriptors": "^1.0.0",
     "has-symbols": "^1.0.3",
     "has-tostringtag": "^1.0.0",
+    "helmet": "^5.1.1",
     "ignore": "^5.2.0",
     "import-fresh": "^3.3.0",
     "imurmurhash": "^0.1.4",
