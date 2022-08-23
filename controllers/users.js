@@ -81,8 +81,9 @@ module.exports.createUser = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.code === 11000) {
-        next(err);
-      } else if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(409).send({ message: 'Регистрация по существующему E-mail' });
+      }
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Переданы некорректные данные' });
       }
       res.status(500).send({ message: 'Произошла ошибка' });
