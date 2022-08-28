@@ -39,10 +39,9 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь по указанному _id не найден'));
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       } else {
         res.status(200).send(user);
       }
