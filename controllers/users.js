@@ -4,11 +4,10 @@ const User = require('../models/user');
 const ConflictError = require('../errors/conflict-error');
 const NotFoundError = require('../errors/not-found-error');
 const UnauthorizedError = require('../errors/unauthorized-error');
-const ValidationError = require('../errors/validation-error');
+const handleErrors = require('../errors/handle-errors');
 
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному _id не найден'));
@@ -16,43 +15,25 @@ module.exports.getUserById = (req, res, next) => {
         res.status(200).send(user);
       }
     })
-    // eslint-disable-next-line consistent-return
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    .catch((err) => handleErrors(err, res, next));
 };
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    // eslint-disable-next-line consistent-return
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    .catch((err) => handleErrors(err, res, next));
 };
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь по указанному _id не найден');
+        next(new NotFoundError('Пользователь по указанному _id не найден'));
       } else {
         res.status(200).send(user);
       }
     })
-    // eslint-disable-next-line consistent-return
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    .catch((err) => handleErrors(err, res, next));
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -86,10 +67,7 @@ module.exports.createUser = (req, res, next) => {
       if (err.code === 11000) {
         return next(new ConflictError('Регистрация по существующему E-mail'));
       }
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      next(err);
+      handleErrors(err, res, next);
     });
 };
 
@@ -101,20 +79,13 @@ module.exports.updateProfile = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь по указанному _id не найден'));
+        next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
       res.status(200).send(user);
     })
-    // eslint-disable-next-line consistent-return
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    .catch((err) => handleErrors(err, res, next));
 };
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -124,20 +95,13 @@ module.exports.updateAvatar = (req, res, next) => {
     { avatar },
     { new: true, runValidators: true },
   )
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь по указанному _id не найден'));
+        next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
       res.status(200).send(user);
     })
-    // eslint-disable-next-line consistent-return
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    .catch((err) => handleErrors(err, res, next));
 };
 
 module.exports.login = (req, res, next) => {
