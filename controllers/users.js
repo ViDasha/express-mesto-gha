@@ -1,13 +1,17 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const ConflictError = require('../errors/conflict-error');
+const NotFoundError = require('../errors/not-found-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
+const ValidationError = require('../errors/validation-error');
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        next(new NotFoundError('Пользователь по указанному _id не найден'));
       } else {
         res.status(200).send(user);
       }
@@ -15,30 +19,30 @@ module.exports.getUserById = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        next(new NotFoundError('Пользователь по указанному _id не найден'));
       } else {
         res.status(200).send(user);
       }
@@ -46,13 +50,13 @@ module.exports.getUser = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -81,16 +85,16 @@ module.exports.createUser = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.code === 11000) {
-        return res.status(409).send({ message: 'Регистрация по существующему E-mail' });
+        return next(new ConflictError('Регистрация по существующему E-mail'));
       }
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findOneAndUpdate(
@@ -101,20 +105,20 @@ module.exports.updateProfile = (req, res) => {
     // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        return next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
       res.status(200).send(user);
     })
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findOneAndUpdate(
     req.user._id,
@@ -124,20 +128,20 @@ module.exports.updateAvatar = (req, res) => {
     // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        return next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
       res.status(200).send(user);
     })
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -154,8 +158,6 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       // ошибка аутентификации
-      res
-        .status(401)
-        .send({ message: err.message });
+      next(new UnauthorizedError(err.message));
     });
 };
