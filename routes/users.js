@@ -9,15 +9,15 @@ const {
   updateAvatar,
 } = require('../controllers/users');
 
+router.get('/', getUsers);
+
+router.get('/me', getUser);
+
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().alphanum().required(),
   }),
 }), getUserById);
-
-router.get('/', getUsers);
-
-router.get('/me', getUser);
 
 router.patch('/me', celebrate({
   body: Joi.object().keys({
