@@ -27,7 +27,7 @@ module.exports.getUserById = (req, res, next) => {
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send(users))
+    .then((users) => res.status(200).send(users))
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
