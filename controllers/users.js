@@ -12,7 +12,7 @@ module.exports.getUserById = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному _id не найден'));
       } else {
-        res.status(200).send(user);
+        res.send(user);
       }
     })
     .catch((err) => handleErrors(err, res, next));
@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res, next) => {
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch((err) => handleErrors(err, res, next));
 };
 
@@ -30,7 +30,7 @@ module.exports.getUser = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному _id не найден'));
       } else {
-        res.status(200).send(user);
+        res.send(user);
       }
     })
     .catch((err) => handleErrors(err, res, next));
@@ -83,7 +83,7 @@ module.exports.updateProfile = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
-      res.status(200).send(user);
+      res.send(user);
     })
     .catch((err) => handleErrors(err, res, next));
 };
@@ -99,7 +99,7 @@ module.exports.updateAvatar = (req, res, next) => {
       if (!user) {
         next(new NotFoundError('Пользователь по указанному _id не найден'));
       }
-      res.status(200).send(user);
+      res.send(user);
     })
     .catch((err) => handleErrors(err, res, next));
 };

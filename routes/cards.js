@@ -1,5 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const router = require('express').Router();
+const patternURL = require('../utils/constants');
 
 const {
   getCards,
@@ -14,7 +15,7 @@ router.get('/', getCards); // возвращает все карточки
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(/^(https?:\/\/)(www\.)?[a-z\d\D]*/),
+    link: Joi.string().required().regex(patternURL),
   }),
 }), createCard); // создает карточку
 

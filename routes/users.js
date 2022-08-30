@@ -1,5 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const router = require('express').Router();
+const patternURL = require('../utils/constants');
 
 const {
   getUsers,
@@ -28,7 +29,7 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().regex(/^(https?:\/\/)(www\.)?[a-z\d\D]*/),
+    avatar: Joi.string().required().regex(patternURL),
   }),
 }), updateAvatar); // обновляет аватар
 

@@ -20,17 +20,18 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndDelete(req.params.cardId) // удаление карточки по Id
+  Card.findById(req.params.cardId) // удаление карточки по Id
+    // eslint-disable-next-line consistent-return
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточка с указанным _id не найдена'));
+        return next(new NotFoundError('Карточка с указанным _id не найдена'));
       }
 
       if (req.user._id !== card.owner.toString()) {
-        next(new ForbiddenError('Вы не можете удалить эту карточку'));
+        return next(new ForbiddenError('Вы не можете удалить эту карточку'));
       }
 
-      Card.findByIdAndRemove(req.params.cardId)
+      return Card.findByIdAndRemove(req.params.cardId)
         .then(() => res.status(200).send({ message: 'Карточка удалена' }));
     })
     .catch((err) => handleErrors(err, res, next));

@@ -6,6 +6,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-error');
+const patternURL = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 
@@ -29,7 +30,7 @@ app.post('/signin', celebrate({
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(/^(https?:\/\/)(www\.)?[a-z\d\D]*/),
+    avatar: Joi.string().regex(patternURL),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
@@ -51,9 +52,9 @@ app.use(errors());
 app.use((err, req, res, next) => {
   if (err.statusCode) {
     res.status(err.statusCode).send({ message: err.message });
+  } else {
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
   }
-
-  res.status(500).send({ message: 'На сервере произошла ошибка' });
   next();
 });
 
